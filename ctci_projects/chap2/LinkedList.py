@@ -54,6 +54,40 @@ class Node:
                     runner = runner.next
             current = current.next
 
+    def return_kth_to_last(self, k):
+        """Find kth to last element using two pointers. O(n) time, O(1) space."""
+        p1 = self
+        p2 = self
+
+        # Move p1 k nodes ahead
+        for i in range(k):
+            if p1 is None:
+                return None
+            p1 = p1.next
+
+        # Move both pointers until p1 reaches end
+        while p1 is not None:
+            p1 = p1.next
+            p2 = p2.next
+
+        return p2
+
+    def return_kth_to_last_recursive(self, k):
+        """Find kth to last element recursively. O(n) time, O(n) space."""
+        return self._kth_helper(k)[1]
+
+    def _kth_helper(self, k):
+        """Helper: returns (index from end, node)."""
+        if self.next is None:
+            return (1, None if k != 1 else self)
+
+        idx, node = self.next._kth_helper(k)
+        idx += 1
+
+        if idx == k:
+            return (idx, self)
+        return (idx, node)
+
     def print_list(self):
         """Print all nodes in the list."""
         values = []
@@ -199,3 +233,33 @@ if __name__ == "__main__":
     print(f"\nBefore: {head.to_list()}")
     head.remove_dupes_no_buffer()
     print(f"After remove_dupes_no_buffer: {head.to_list()}")
+
+    print("\n" + "=" * 60)
+    print("\nTesting return_kth_to_last:")
+    print("-" * 60)
+
+    head = Node(1)
+    head.append_to_tail(2)
+    head.append_to_tail(3)
+    head.append_to_tail(4)
+    head.append_to_tail(5)
+    print(f"List: {head.to_list()}")
+
+    for k in range(6):
+        result = head.return_kth_to_last(k)
+        print(f"k={k}: {result.data if result else None}")
+
+    print("\n" + "=" * 60)
+    print("\nTesting return_kth_to_last_recursive:")
+    print("-" * 60)
+
+    head = Node(10)
+    head.append_to_tail(20)
+    head.append_to_tail(30)
+    head.append_to_tail(40)
+    head.append_to_tail(50)
+    print(f"List: {head.to_list()}")
+
+    for k in range(6):
+        result = head.return_kth_to_last_recursive(k)
+        print(f"k={k}: {result.data if result else None}")
