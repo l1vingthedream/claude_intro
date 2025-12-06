@@ -28,6 +28,32 @@ class Node:
 
         return self  # Data not found
 
+    def remove_dupes(self):
+        """Remove duplicates using hash set. O(n) time, O(n) space."""
+        seen = set()
+        n = self
+        seen.add(n.data)
+
+        while n.next is not None:
+            if n.next.data in seen:
+                n.next = n.next.next
+            else:
+                seen.add(n.next.data)
+                n = n.next
+
+    def remove_dupes_no_buffer(self):
+        """Remove duplicates without buffer. O(n²) time, O(1) space."""
+        current = self
+
+        while current is not None:
+            runner = current
+            while runner.next is not None:
+                if runner.next.data == current.data:
+                    runner.next = runner.next.next
+                else:
+                    runner = runner.next
+            current = current.next
+
     def print_list(self):
         """Print all nodes in the list."""
         values = []
@@ -112,3 +138,64 @@ if __name__ == "__main__":
     print(f"Delete 10: {head.to_list()}")
     head = head.delete_node(50)
     print(f"Delete 50: {head.to_list()}")
+
+    print("\n" + "=" * 60)
+    print("\nTesting remove_dupes:")
+    print("-" * 60)
+
+    head = Node(1)
+    head.append_to_tail(2)
+    head.append_to_tail(3)
+    head.append_to_tail(2)
+    head.append_to_tail(1)
+    head.append_to_tail(4)
+    print(f"Before: {head.to_list()}")
+    head.remove_dupes()
+    print(f"After remove_dupes: {head.to_list()}")
+
+    head = Node(5)
+    head.append_to_tail(5)
+    head.append_to_tail(5)
+    head.append_to_tail(5)
+    print(f"\nBefore: {head.to_list()}")
+    head.remove_dupes()
+    print(f"After remove_dupes: {head.to_list()}")
+
+    head = Node(1)
+    head.append_to_tail(2)
+    head.append_to_tail(3)
+    print(f"\nBefore (no dupes): {head.to_list()}")
+    head.remove_dupes()
+    print(f"After remove_dupes: {head.to_list()}")
+
+    print("\n" + "=" * 60)
+    print("\nTesting remove_dupes_no_buffer:")
+    print("-" * 60)
+
+    head = Node(1)
+    head.append_to_tail(2)
+    head.append_to_tail(3)
+    head.append_to_tail(2)
+    head.append_to_tail(1)
+    head.append_to_tail(4)
+    print(f"Before: {head.to_list()}")
+    head.remove_dupes_no_buffer()
+    print(f"After remove_dupes_no_buffer: {head.to_list()}")
+
+    head = Node(5)
+    head.append_to_tail(5)
+    head.append_to_tail(5)
+    head.append_to_tail(5)
+    print(f"\nBefore: {head.to_list()}")
+    head.remove_dupes_no_buffer()
+    print(f"After remove_dupes_no_buffer: {head.to_list()}")
+
+    head = Node(7)
+    head.append_to_tail(8)
+    head.append_to_tail(7)
+    head.append_to_tail(9)
+    head.append_to_tail(8)
+    head.append_to_tail(7)
+    print(f"\nBefore: {head.to_list()}")
+    head.remove_dupes_no_buffer()
+    print(f"After remove_dupes_no_buffer: {head.to_list()}")
