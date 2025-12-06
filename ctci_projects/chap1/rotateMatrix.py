@@ -50,9 +50,30 @@ def rotate_matrix_transpose(matrix):
     return True
 
 
+def rotate_matrix_fast(matrix):
+    """Optimized transpose + reverse. Better cache locality and fewer ops."""
+    if not matrix or len(matrix) != len(matrix[0]):
+        return False
+
+    n = len(matrix)
+
+    # Transpose with manual swap (faster than tuple unpacking)
+    for i in range(n):
+        for j in range(i + 1, n):
+            temp = matrix[i][j]
+            matrix[i][j] = matrix[j][i]
+            matrix[j][i] = temp
+
+    # Reverse using slicing (faster than reverse())
+    for i in range(n):
+        matrix[i] = matrix[i][::-1]
+
+    return True
+
+
 def rotate_matrix(matrix):
     """Main function - rotates NxN matrix 90 degrees clockwise in-place."""
-    return rotate_matrix_inplace(matrix)
+    return rotate_matrix_fast(matrix)
 
 
 if __name__ == "__main__":
@@ -114,6 +135,18 @@ if __name__ == "__main__":
     for original, expected in test_cases:
         matrix = [row[:] for row in original]
         result = rotate_matrix_transpose(matrix)
+        status = "✓" if matrix == expected else "✗"
+        print(f"{status} {len(matrix)}x{len(matrix)} matrix")
+        if matrix != expected:
+            print(f"   Expected: {expected}")
+            print(f"   Got:      {matrix}")
+
+    print("\n" + "=" * 60)
+    print("\nTesting rotate_matrix_fast:")
+    print("-" * 60)
+    for original, expected in test_cases:
+        matrix = [row[:] for row in original]
+        result = rotate_matrix_fast(matrix)
         status = "✓" if matrix == expected else "✗"
         print(f"{status} {len(matrix)}x{len(matrix)} matrix")
         if matrix != expected:
