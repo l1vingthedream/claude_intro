@@ -88,6 +88,17 @@ class Node:
             return (idx, self)
         return (idx, node)
 
+    def delete_middle_node(self):
+        """Delete this node (must not be first or last). O(1) time and space."""
+        if self.next is None:
+            return False
+
+        # Copy next node's data into current node
+        self.data = self.next.data
+        # Skip next node
+        self.next = self.next.next
+        return True
+
     def print_list(self):
         """Print all nodes in the list."""
         values = []
@@ -263,3 +274,43 @@ if __name__ == "__main__":
     for k in range(6):
         result = head.return_kth_to_last_recursive(k)
         print(f"k={k}: {result.data if result else None}")
+
+    print("\n" + "=" * 60)
+    print("\nTesting delete_middle_node:")
+    print("-" * 60)
+
+    # Create list a->b->c->d->e->f
+    head = Node('a')
+    b = Node('b')
+    c = Node('c')
+    d = Node('d')
+    e = Node('e')
+    f = Node('f')
+    head.next = b
+    b.next = c
+    c.next = d
+    d.next = e
+    e.next = f
+
+    print(f"Before: {head.to_list()}")
+    c.delete_middle_node()
+    print(f"After delete_middle_node on 'c': {head.to_list()}")
+
+    # Delete another middle node (get fresh reference)
+    middle = b.next  # This is now the node with 'd' data
+    print(f"\nBefore: {head.to_list()}")
+    middle.delete_middle_node()
+    print(f"After delete_middle_node on node with 'd': {head.to_list()}")
+
+    # Test with numbers
+    head = Node(1)
+    head.append_to_tail(2)
+    head.append_to_tail(3)
+    head.append_to_tail(4)
+    head.append_to_tail(5)
+
+    # Get reference to node with value 3
+    node_3 = head.next.next
+    print(f"\nBefore: {head.to_list()}")
+    node_3.delete_middle_node()
+    print(f"After delete_middle_node on node with value 3: {head.to_list()}")
