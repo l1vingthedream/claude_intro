@@ -99,6 +99,62 @@ class Node:
         self.next = self.next.next
         return True
 
+    def partition(self, x):
+        """Partition list around value x. O(n) time, O(1) space."""
+        before_start = None
+        before_end = None
+        after_start = None
+        after_end = None
+
+        current = self
+        while current is not None:
+            next_node = current.next
+            current.next = None
+
+            if current.data < x:
+                if before_start is None:
+                    before_start = current
+                    before_end = before_start
+                else:
+                    before_end.next = current
+                    before_end = current
+            else:
+                if after_start is None:
+                    after_start = current
+                    after_end = after_start
+                else:
+                    after_end.next = current
+                    after_end = current
+
+            current = next_node
+
+        if before_start is None:
+            return after_start
+
+        before_end.next = after_start
+        return before_start
+
+    def partition_prepend(self, x):
+        """Partition by prepending smaller elements to head. O(n) time, O(1) space."""
+        head = self
+        tail = self
+
+        current = self.next
+        while current is not None:
+            next_node = current.next
+            if current.data < x:
+                # Insert at head
+                current.next = head
+                head = current
+            else:
+                # Insert at tail
+                tail.next = current
+                tail = current
+            current = next_node
+
+        tail.next = None
+        return head
+
     def print_list(self):
         """Print all nodes in the list."""
         values = []
@@ -314,3 +370,54 @@ if __name__ == "__main__":
     print(f"\nBefore: {head.to_list()}")
     node_3.delete_middle_node()
     print(f"After delete_middle_node on node with value 3: {head.to_list()}")
+
+    print("\n" + "=" * 60)
+    print("\nTesting partition:")
+    print("-" * 60)
+
+    # Example from problem: 3 -> 5 -> 8 -> 5 -> 10 -> 2 -> 1 [partition=5]
+    head = Node(3)
+    head.append_to_tail(5)
+    head.append_to_tail(8)
+    head.append_to_tail(5)
+    head.append_to_tail(10)
+    head.append_to_tail(2)
+    head.append_to_tail(1)
+    print(f"Before partition(5): {head.to_list()}")
+    head = head.partition(5)
+    result = head.to_list()
+    print(f"After partition(5): {result}")
+    # Verify: all elements < 5 come before elements >= 5
+    less_than = [x for x in result if x < 5]
+    greater_equal = [x for x in result if x >= 5]
+    print(f"Elements < 5: {less_than}, Elements >= 5: {greater_equal}")
+
+    # Test with different partition value
+    head = Node(7)
+    head.append_to_tail(2)
+    head.append_to_tail(9)
+    head.append_to_tail(3)
+    head.append_to_tail(5)
+    print(f"\nBefore partition(6): {head.to_list()}")
+    head = head.partition(6)
+    result = head.to_list()
+    print(f"After partition(6): {result}")
+
+    print("\n" + "=" * 60)
+    print("\nTesting partition_prepend:")
+    print("-" * 60)
+
+    head = Node(3)
+    head.append_to_tail(5)
+    head.append_to_tail(8)
+    head.append_to_tail(5)
+    head.append_to_tail(10)
+    head.append_to_tail(2)
+    head.append_to_tail(1)
+    print(f"Before partition_prepend(5): {head.to_list()}")
+    head = head.partition_prepend(5)
+    result = head.to_list()
+    print(f"After partition_prepend(5): {result}")
+    less_than = [x for x in result if x < 5]
+    greater_equal = [x for x in result if x >= 5]
+    print(f"Elements < 5: {less_than}, Elements >= 5: {greater_equal}")
